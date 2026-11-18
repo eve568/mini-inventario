@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7f4">
+    <title>Mini Inventario</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/productos.js" defer></script>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="layout">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Mini Inventario, inicio">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <span>mini<span class="brand-light">inventario</span></span>
+        </a>
+        <span class="local-badge"><span aria-hidden="true"></span> Guardado en este dispositivo</span>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">CONTROL DE EXISTENCIAS</p>
+        <h1 id="page-title">Tu inventario, <span>en orden.</span></h1>
+        <p class="intro-copy">Registra tus productos y mantén a la vista lo que necesita reposición.</p>
+      </section>
+
+      <section class="workspace" aria-label="Administración del inventario">
+        <div class="inventory-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">RESUMEN</p>
+              <h2>Productos <span id="product-count" class="count">0</span></h2>
+            </div>
+            <label class="filter-control" for="low-stock-filter">
+              <input id="low-stock-filter" type="checkbox">
+              <span class="switch" aria-hidden="true"></span>
+              <span>Solo existencias bajas</span>
+            </label>
+          </div>
+          <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+          <div id="product-list" class="product-list"></div>
+          <div id="empty-state" class="empty-state">
+            <div class="empty-icon" aria-hidden="true">▤</div>
+            <h3 id="empty-title">Aún no hay productos</h3>
+            <p id="empty-copy">Agrega tu primer producto para empezar a organizar tus existencias.</p>
+          </div>
+        </div>
+
+        <aside class="form-panel" aria-labelledby="form-title">
+          <div class="form-heading">
+            <span id="form-icon" class="form-icon" aria-hidden="true">＋</span>
+            <div>
+              <p class="eyebrow" id="form-eyebrow">TU CATÁLOGO</p>
+              <h2 id="form-title">Agregar producto</h2>
+            </div>
+          </div>
+          <p class="form-copy">Completa los datos para tener tu inventario al día.</p>
+          <form id="product-form" novalidate>
+            <label class="field" for="name">
+              <span>Nombre del producto</span>
+              <input id="name" name="name" type="text" maxlength="120" placeholder="Ej. Café de olla" required>
+            </label>
+            <label class="field" for="sku">
+              <span>SKU <small>Código único</small></span>
+              <input id="sku" name="sku" type="text" maxlength="60" placeholder="Ej. CAF-001" required>
+            </label>
+            <div class="field-row">
+              <label class="field" for="quantity">
+                <span>Cantidad actual</span>
+                <input id="quantity" name="quantity" type="number" min="0" step="1" placeholder="0" required>
+              </label>
+              <label class="field" for="minimum-quantity">
+                <span>Cantidad mínima</span>
+                <input id="minimum-quantity" name="minimum_quantity" type="number" min="0" step="1" placeholder="0" required>
+              </label>
+            </div>
+            <p id="form-error" class="form-error" role="alert" hidden></p>
+            <button id="submit-button" class="primary-button" type="submit"><span aria-hidden="true">＋</span> Agregar producto</button>
+            <button id="cancel-button" class="cancel-button" type="button" hidden>Cancelar edición</button>
+          </form>
+          <div class="tip"><span aria-hidden="true">✳</span><p>Recibirás un aviso cuando la cantidad esté por debajo del mínimo.</p></div>
+        </aside>
+      </section>
+      <footer>Mini Inventario <span>·</span> Tus productos se guardan localmente en este navegador.</footer>
+    </main>
+  </body>
+</html>
