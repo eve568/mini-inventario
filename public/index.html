@@ -6,6 +6,9 @@
     <meta name="theme-color" content="#f5f7f4">
     <title>Mini Inventario</title>
     <link rel="stylesheet" href="/styles.css">
+    <script src="/vendor/supabase/supabase.js" defer></script>
+    <script src="/config.js" defer></script>
+    <script src="/auth.js" defer></script>
     <script src="/productos.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
@@ -16,16 +19,39 @@
           <span class="brand-mark" aria-hidden="true">M</span>
           <span>mini<span class="brand-light">inventario</span></span>
         </a>
-        <span class="local-badge"><span aria-hidden="true"></span> Guardado en este dispositivo</span>
+        <div class="session-controls">
+          <span id="session-email" class="session-email" hidden></span>
+          <button id="sign-out-button" class="sign-out-button" type="button" hidden>Cerrar sesión</button>
+          <span id="sync-badge" class="local-badge" hidden><span aria-hidden="true"></span> Inventario sincronizado</span>
+        </div>
       </header>
 
-      <section class="intro" aria-labelledby="page-title">
+      <section id="app-intro" class="intro" aria-labelledby="page-title" hidden>
         <p class="eyebrow">CONTROL DE EXISTENCIAS</p>
         <h1 id="page-title">Tu inventario, <span>en orden.</span></h1>
         <p class="intro-copy">Registra tus productos y mantén a la vista lo que necesita reposición.</p>
       </section>
 
-      <section class="workspace" aria-label="Administración del inventario">
+      <section id="auth-panel" class="auth-panel" aria-labelledby="auth-title">
+        <p class="eyebrow">TU CUENTA</p>
+        <h1 id="auth-title">Inicia sesión <span>para continuar.</span></h1>
+        <p class="intro-copy">Accede a tu inventario privado desde cualquier dispositivo.</p>
+        <form id="auth-form" class="auth-form" novalidate>
+          <label class="field" for="auth-email">
+            <span>Correo electrónico</span>
+            <input id="auth-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+          </label>
+          <label class="field" for="auth-password">
+            <span>Contraseña</span>
+            <input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="6" required>
+          </label>
+          <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
+          <button id="auth-submit" class="primary-button" type="submit">Iniciar sesión</button>
+          <button id="auth-mode-toggle" class="auth-mode-toggle" type="button">¿No tienes cuenta? Regístrate</button>
+        </form>
+      </section>
+
+      <section id="workspace" class="workspace" aria-label="Administración del inventario" hidden>
         <div class="inventory-panel">
           <div class="panel-heading">
             <div>
@@ -82,7 +108,7 @@
           <div class="tip"><span aria-hidden="true">✳</span><p>Recibirás un aviso cuando la cantidad esté por debajo del mínimo.</p></div>
         </aside>
       </section>
-      <footer>Mini Inventario <span>·</span> Tus productos se guardan localmente en este navegador.</footer>
+      <footer>Mini Inventario <span>·</span> Tu inventario privado, disponible en línea.</footer>
     </main>
   </body>
 </html>
