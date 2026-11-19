@@ -1,20 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'mini-inventario:productos:v1';
-
-  function readAll() {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return [];
-      const products = JSON.parse(stored);
-      return Array.isArray(products) ? products : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function writeAll(products) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-  }
+  const integerMaximum = 2_147_483_647;
 
   function normalize(input) {
     const name = String(input.name ?? '').trim();
@@ -23,38 +8,62 @@
     const minimumQuantityValue = String(input.minimum_quantity ?? '').trim();
     if (!name) throw new Error('Escribe el nombre del producto.');
     if (!sku) throw new Error('Escribe el SKU del producto.');
+    if (name.length > 120) throw new Error('El nombre no puede superar 120 caracteres.');
+    if (sku.length > 60) throw new Error('El SKU no puede superar 60 caracteres.');
     if (!quantityValue) throw new Error('Escribe la cantidad actual.');
     if (!minimumQuantityValue) throw new Error('Escribe la cantidad mínima.');
     const quantity = Number(quantityValue);
     const minimumQuantity = Number(minimumQuantityValue);
-    if (!Number.isInteger(quantity) || quantity < 0) throw new Error('La cantidad actual debe ser un entero igual o mayor que cero.');
-    if (!Number.isInteger(minimumQuantity) || minimumQuantity < 0) throw new Error('La cantidad mínima debe ser un entero igual o mayor que cero.');
+    if (!Number.isInteger(quantity) || quantity < 0 || quantity > integerMaximum) {
+      throw new Error(`La cantidad actual debe ser un entero entre cero y ${integerMaximum}.`);
+    }
+    if (!Number.isInteger(minimumQuantity) || minimumQuantity < 0 || minimumQuantity > integerMaximum) {
+      throw new Error(`La cantidad mínima debe ser un entero entre cero y ${integerMaximum}.`);
+    }
     return { name, sku, quantity, minimum_quantity: minimumQuantity };
   }
 
-  function list() {
-    return readAll().sort((a, b) => a.name.localeCompare(b.name, 'es'));
-  }
-
-  function save(input, id = null) {
-    const product = normalize(input);
-    const products = readAll();
-    const duplicate = products.some((item) => item.sku.toUpperCase() === product.sku && item.id !== id);
-    if (duplicate) throw new Error('Ya existe un producto con ese SKU.');
-
-    if (id) {
-      const index = products.findIndex((item) => item.id === id);
-      if (index < 0) throw new Error('No se encontró el producto que quieres editar.');
-      products[index] = { ...products[index], ...product, updated_at: new Date().toISOString() };
-    } else {
-      products.push({ id: crypto.randomUUID(), ...product, created_at: new Date().toISOString() });
+  async function request(url, options = {}) {
+    const auth = await window.AuthReady;
+    const accessToken = await auth.accessToken();
+    if (!accessToken) {
+      const error = new Error('Inicia sesión para acceder a tus productos.');
+      error.status = 401;
+      throw error;
     }
-    writeAll(products);
-    return products.find((item) => item.id === (id || products.at(-1).id));
+
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+        ...options.headers
+      }
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(body.error || 'No se pudo completar la solicitud.');
+      error.status = response.status;
+      throw error;
+    }
+    return body;
   }
 
-  function remove(id) {
-    writeAll(readAll().filter((item) => item.id !== id));
+  async function list() {
+    const result = await request('/api/products');
+    return result.products.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+  }
+
+  async function save(input, id = null) {
+    const product = normalize(input);
+    return request(id ? `/api/products/${encodeURIComponent(id)}` : '/api/products', {
+      method: id ? 'PATCH' : 'POST',
+      body: JSON.stringify(product)
+    });
+  }
+
+  async function remove(id) {
+    await request(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' });
   }
 
   window.Productos = Object.freeze({ list, save, remove });

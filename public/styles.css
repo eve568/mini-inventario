@@ -24,12 +24,25 @@ button, input { font: inherit; }
 .brand-light { color: #779181; font-weight: 500; }
 .local-badge { display: inline-flex; gap: 8px; align-items: center; color: #6f7b73; font-size: 12px; }
 .local-badge > span { width: 7px; height: 7px; border-radius: 50%; background: #65a67c; box-shadow: 0 0 0 3px #e3f1e5; }
+.session-controls { display: flex; align-items: center; gap: 14px; }
+.session-email { max-width: 220px; overflow: hidden; color: #748077; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.sign-out-button, .auth-mode-toggle { padding: 7px 9px; border: 0; color: #6c7a70; background: transparent; cursor: pointer; font-size: 11px; }
+.sign-out-button:hover, .auth-mode-toggle:hover { color: var(--green); }
 .intro { padding: 48px 0 31px; }
 .eyebrow { color: #8a988e; font-size: 10px; letter-spacing: 1.7px; font-weight: 700; margin: 0 0 10px; }
 h1, h2, h3, p { margin-top: 0; }
 h1 { margin-bottom: 10px; font: 700 clamp(29px, 4vw, 39px)/1.2 Manrope, sans-serif; letter-spacing: -1.6px; }
 h1 span { color: #60866e; }
 .intro-copy { color: #7c857f; margin: 0; font-size: 14px; }
+.auth-panel { max-width: 430px; margin: 55px auto 75px; padding: 30px 32px; border: 1px solid #e9ede9; border-radius: 14px; background: var(--paper); box-shadow: 0 8px 28px #283d2d08; }
+.auth-panel h1 { margin: 0 0 10px; font-size: clamp(26px, 4vw, 33px); }
+.auth-panel > .intro-copy { margin-bottom: 25px; }
+.auth-form { display: grid; gap: 3px; }
+.auth-message { min-height: 18px; margin: 0 0 8px; color: #548062; font-size: 11px; line-height: 1.5; }
+.auth-message.is-error { color: #a3483d; }
+.auth-mode-toggle { padding: 12px 5px 2px; }
+.status-message { margin: 14px 0 0; color: #718079; font-size: 11px; }
+.status-message:not([hidden]):empty { display: none; }
 .workspace { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(315px, .95fr); gap: 22px; align-items: start; }
 .inventory-panel, .form-panel { background: var(--paper); border: 1px solid #e9ede9; border-radius: 14px; box-shadow: 0 8px 28px #283d2d08; }
 .inventory-panel { min-height: 465px; padding: 25px 27px; }
@@ -98,6 +111,10 @@ footer span { padding: 0 4px; color: #c7cec8; }
 @media (max-width: 470px) {
   .topbar { height: 68px; }
   .local-badge { max-width: 130px; font-size: 10px; }
+  .session-controls { gap: 5px; }
+  .session-email { max-width: 110px; font-size: 9px; }
+  .sign-out-button { padding: 6px 4px; font-size: 9px; }
+  .auth-panel { margin: 35px auto 55px; padding: 24px 20px; }
   .inventory-panel { padding: 20px 15px; }
   .panel-heading { align-items: flex-start; flex-direction: column; gap: 13px; }
   .filter-control { white-space: normal; }
