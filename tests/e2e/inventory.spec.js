@@ -34,14 +34,14 @@ async function accessToken(page) {
 async function deleteProductBySku(page, sku) {
   const token = await accessToken(page);
   if (!token) return;
-  const response = await page.request.get('/api/products', {
+  const response = await page.request.get(new URL('/api/products', page.url()).toString(), {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!response.ok()) return;
   const { products } = await response.json();
   const product = products.find((item) => item.sku === sku);
   if (product) {
-    await page.request.delete(`/api/products/${encodeURIComponent(product.id)}`, {
+    await page.request.delete(new URL(`/api/products/${encodeURIComponent(product.id)}`, page.url()).toString(), {
       headers: { Authorization: `Bearer ${token}` }
     });
   }
